@@ -11,7 +11,6 @@ namespace Arrilot
   use Arrilot\BitrixMigrations\Storages\BitrixDatabaseStorage;
   use Arrilot\BitrixMigrations\TemplatesCollection;
   use Symfony\Component\Console\Application;
-  use Webmozart\PathUtil\Path;
 
   /**
    * Содержит методы, для организации интерфейса командной строки в любом файле.
@@ -43,32 +42,14 @@ namespace Arrilot
     }
 
     /**
-     * Получает абсолютный путь к папке с миграциями.
-     * @param  string $documentRoot Корень сайта.
-     * @param  string $directory    Папка с миграциями.
-     * @return string               Абсолютный путь к папке.
-     */
-    protected static function getDirectory($documentRoot, $directory)
-    {
-      $absolute = Path::makeAbsolute($directory, $documentRoot);
-      return $absolute;
-    }
-
-    /**
      * Инициализирует командный интерфейс мигратора.
-     * @param  string $documentRoot Корень сайта.
-     * @param  string $directory    Путь к папке с миграциями для установки.
-     * @param  string $table        Имя таблицы с установленными миграциями.
+     * @param  string $directory Путь к папке с миграциями для установки.
+     * @param  string $table     Имя таблицы с установленными миграциями.
      * @return void
      */
-    protected static function init($documentRoot, $directory, $table)
+    protected static function init($directory, $table)
     {
-      $directory = self::getDirectory($documentRoot, $directory);
-
-      $config = array(
-        'dir' => $directory,
-        'table' => $table
-      );
+      $config = array('dir' => $directory, 'table' => $table);
 
       $database = new BitrixDatabaseStorage($table);
       $templates = new TemplatesCollection();
@@ -88,16 +69,16 @@ namespace Arrilot
 
     /**
      * Запускает интерфейс командной строки.
-     * @param  string $table        Имя таблицы с установленными миграциями.
-     * @param  string $directory    Путь к папке с миграциями для установки.
      * @param  string $documentRoot Корень сайта.
+     * @param  string $directory    Путь к папке с миграциями для установки.
+     * @param  string $table        Имя таблицы с установленными миграциями.
      * @return void
      */
-    public static function start($table, $directory, $documentRoot)
+    public static function start($documentRoot, $directory, $table)
     {
       self::includeProlog($documentRoot);
       self::includeModules();
-      self::init($documentRoot, $directory, $table);
+      self::init($directory, $table);
     }
   }
 }

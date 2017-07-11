@@ -7,6 +7,7 @@ use Arrilot\BitrixMigrations\Interfaces\FileStorageInterface;
 use Arrilot\BitrixMigrations\Interfaces\MigrationInterface;
 use Arrilot\BitrixMigrations\Storages\BitrixDatabaseStorage;
 use Arrilot\BitrixMigrations\Storages\FileStorage;
+use Webmozart\PathUtil\Path;
 use Exception;
 
 class Migrator
@@ -58,6 +59,8 @@ class Migrator
     {
         $this->config = $config;
         $this->dir = $config['dir'];
+
+        $this->dir = Path::makeAbsolute($_SERVER['DOCUMENT_ROOT'], $this->dir);
 
         $this->templates = $templates;
         $this->database = $database ?: new BitrixDatabaseStorage($config['table']);

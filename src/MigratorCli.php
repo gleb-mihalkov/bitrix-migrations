@@ -11,6 +11,7 @@ namespace Arrilot
   use Arrilot\BitrixMigrations\Storages\BitrixDatabaseStorage;
   use Arrilot\BitrixMigrations\TemplatesCollection;
   use Symfony\Component\Console\Application;
+  use Webmozart\PathUtil\Path;
 
   /**
    * Содержит методы, для организации интерфейса командной строки в любом файле.
@@ -32,6 +33,60 @@ namespace Arrilot
     }
 
     /**
+     * Загружает необходимые для работы мигратора модули Битрикс.
+     * @return void
+     */
+    protected static function includeModules()
+    {
+      CModule::IncludeModule('iblock');
+      CModule::IncludeModule('highloadblock');
+    }
+
+    /**
+     * Получает абсолютный путь к папке с миграциями.
+     * @param  string $documentRoot Корень сайта.
+     * @param  string $directory    Папка с миграциями.
+     * @return string               Абсолютный путь к папке.
+     */
+    protected static function getDirectory($documentRoot, $directory)
+    {
+      $absolute = Path::makeAbsolute($directory, $documentRoot);
+      return $absolute;
+    }
+
+    /**
+     * Инициализирует командный интерфейс мигратора.
+     * @param  string $documentRoot Корень сайта.
+     * @param  string $directory    Путь к папке с миграциями для установки.
+     * @param  string $table        Имя таблицы с установленными миграциями.
+     * @return void
+     */
+    protected static function init($documentRoot, $directory, $table)
+    {
+      $directory = self::getDirectory($documentRoot, $directory);
+
+      $config = array(
+        'dir' => $directory,
+        'table' => $table
+      );
+
+      $database = new BitrixDatabaseStorage($table);
+      $templates = new TemplatesCollection();
+      $templates->registerBasicTemplates();
+
+      $migrator = new Migrator($config, $templates, $database);
+
+      $app = new Application('Migrator');
+      $app->add(new MakeCommand($migrator));
+      $app->add(new InstallCommand($table, $database));
+      $app->add(new MigrateCommand($migrator));
+      $app->add(new RollbackCommand($migrator));
+      $app->add(new TemplatesCommand($templates));
+      $app->add(new StatusCommand($migrator));
+      $app->run();
+    }
+
+    /**
      * Запускает интерфейс командной строки.
      * @param  string $table        Имя таблицы с установленными миграциями.
      * @param  string $directory    Путь к папке с миграциями для установки.
@@ -41,29 +96,8 @@ namespace Arrilot
     public static function start($table, $directory, $documentRoot)
     {
       self::includeProlog($documentRoot);
-
-      CModule::IncludeModule('iblock');
-      CModule::IncludeModule('highloadblock');
-
-      $config = array(
-        'dir' => $directory,
-        'table' => $table
-      );
-
-      $database = new BitrixDatabaseStorage($config['table']);
-      $templates = new TemplatesCollection();
-      $templates->registerBasicTemplates();
-
-      $migrator = new Migrator($config, $templates, $database);
-
-      $app = new Application('Migrator');
-      $app->add(new MakeCommand($migrator));
-      $app->add(new InstallCommand($config['table'], $database));
-      $app->add(new MigrateCommand($migrator));
-      $app->add(new RollbackCommand($migrator));
-      $app->add(new TemplatesCommand($templates));
-      $app->add(new StatusCommand($migrator));
-      $app->run();
+      self::includeModules();
+      self::init($documentRoot, $directory, $table);
     }
   }
 }

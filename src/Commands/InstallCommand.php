@@ -50,8 +50,7 @@ class InstallCommand extends AbstractCommand
     protected function fire()
     {
         if ($this->database->checkMigrationTableExistence()) {
-            $this->info("Table \"{$this->table}\" already exists");
-            return;
+            $this->abort("Table \"{$this->table}\" already exists");
         }
 
         $this->database->createMigrationTable();

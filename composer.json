@@ -1,5 +1,5 @@
 {
-  "name": "gm/bitrix-migrations",
+  "name": "arrilot/bitrix-migrations",
   "license": "MIT",
   "description": "Database migrations for Bitrix CMS",
   "keywords": [
@@ -24,12 +24,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Gm\\BitrixMigrations\\": "src/"
+      "Arrilot\\BitrixMigrations\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Gm\\Tests\\BitrixMigrations\\": "tests/"
+      "Arrilot\\Tests\\BitrixMigrations\\": "tests/"
     }
   }
 }

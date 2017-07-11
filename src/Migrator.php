@@ -60,7 +60,7 @@ class Migrator
         $this->config = $config;
         $this->dir = $config['dir'];
 
-        $this->dir = Path::makeAbsolute($_SERVER['DOCUMENT_ROOT'], $this->dir);
+        $this->dir = Path::makeAbsolute($this->dir, $_SERVER['DOCUMENT_ROOT']);
 
         $this->templates = $templates;
         $this->database = $database ?: new BitrixDatabaseStorage($config['table']);

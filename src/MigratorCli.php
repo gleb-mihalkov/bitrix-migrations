@@ -1,5 +1,5 @@
 <?php
-namespace Arrilot
+namespace Arrilot\BitrixMigrations
 {
   use Arrilot\BitrixMigrations\Commands\MakeCommand;
   use Arrilot\BitrixMigrations\Commands\InstallCommand;
@@ -11,6 +11,7 @@ namespace Arrilot
   use Arrilot\BitrixMigrations\Storages\BitrixDatabaseStorage;
   use Arrilot\BitrixMigrations\TemplatesCollection;
   use Symfony\Component\Console\Application;
+  use CModule;
 
   /**
    * Содержит методы, для организации интерфейса командной строки в любом файле.
@@ -24,7 +25,7 @@ namespace Arrilot
      */
     protected static function includeProlog($documentRoot)
     {
-      $isIncluded = defined('INIT_INCLUDED') || INIT_INCLUDED === true;
+      $isIncluded = defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED === true;
       if ($isIncluded) return;
 
       $_SERVER['DOCUMENT_ROOT'] = $documentRoot;

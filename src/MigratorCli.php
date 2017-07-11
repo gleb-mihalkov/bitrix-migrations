@@ -25,7 +25,7 @@ namespace Arrilot\BitrixMigrations
      */
     protected static function includeProlog($documentRoot)
     {
-      $isIncluded = defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED === true;
+      $isIncluded = defined('B_PROLOG_INCLUDED') && B_PROLOG_INCLUDED === true;
       if ($isIncluded) return;
 
       $_SERVER['DOCUMENT_ROOT'] = $documentRoot;

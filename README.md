@@ -1,4 +1,4 @@
-# Bitrix-migrations (fork)
+# bitrix-migrations (fork)
 
 *Форк проекта [arrilot/bitrix-migrations](https://github.com/arrilot/bitrix-migrations).*
 
